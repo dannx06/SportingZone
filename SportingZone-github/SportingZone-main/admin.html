@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SportingZone | Painel Admin</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <aside class="admin-sidebar" id="admin-sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon"><img src="img/LogoAdmin.jpeg" class="logo-admin" alt="Logo"></div>
+      <div>
+        <div class="brand-name">SportingZone</div>
+        <div class="brand-sub">Painel Admin</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" onclick="showSection('dashboard', this)">
+        <i class="fas fa-chart-line"></i>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" onclick="showSection('pedidos', this)">
+        <i class="fas fa-bag-shopping"></i>
+        <span>Pedidos</span>
+      </button>
+      <button class="nav-item" onclick="showSection('produtos', this)">
+        <i class="fas fa-box-open"></i>
+        <span>Produtos</span>
+      </button>
+      <button class="nav-item" onclick="showSection('perfil', this)">
+        <i class="fas fa-user-shield"></i>
+        <span>Meu Perfil</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="nav-item logout-item" onclick="sairAdmin()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Sair</span>
+      </button>
+      <a href="index.html" class="nav-item site-link">
+        <i class="fas fa-globe"></i>
+        <span>Ver site</span>
+      </a>
+    </div>
+
+    <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+  </aside>
+
+  <div class="admin-main">
+
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1 class="page-title" id="page-title">Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="admin-badge">
+          <i class="fas fa-user-shield"></i>
+          <span id="admin-name-display">Administrador</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <section class="admin-section active" id="sec-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-bag-shopping"></i></div>
+            <div class="stat-info">
+              <div class="stat-value" id="stat-pedidos">0</div>
+              <div class="stat-label">Total de Pedidos</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon lime"><i class="fas fa-dollar-sign"></i></div>
+            <div class="stat-info">
+              <div class="stat-value" id="stat-receita">R$ 0,00</div>
+              <div class="stat-label">Receita Total</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon dark"><i class="fas fa-users"></i></div>
+            <div class="stat-info">
+              <div class="stat-value" id="stat-clientes">0</div>
+              <div class="stat-label">Clientes Cadastrados</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon gray"><i class="fas fa-box-open"></i></div>
+            <div class="stat-info">
+              <div class="stat-value" id="stat-produtos">0</div>
+              <div class="stat-label">Produtos Ativos</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-bottom">
+          <div class="recent-card">
+            <div class="card-header">
+              <h3><i class="fas fa-clock"></i> Pedidos Recentes</h3>
+            </div>
+            <div id="recent-orders-list" class="recent-list">
+              <p class="empty-state">Nenhum pedido ainda.</p>
+            </div>
+          </div>
+
+          <div class="recent-card">
+            <div class="card-header">
+              <h3><i class="fas fa-users"></i> Clientes Recentes</h3>
+            </div>
+            <div id="recent-users-list" class="recent-list">
+              <p class="empty-state">Nenhum cliente cadastrado ainda.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-section" id="sec-pedidos">
+        <div class="section-header">
+          <h2>Todos os Pedidos</h2>
+          <div class="search-box-admin">
+            <i class="fas fa-search"></i>
+            <input type="text" id="pedido-search" placeholder="Buscar por cliente..." oninput="filtrarPedidos()" />
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="admin-table" id="pedidos-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>E-mail</th>
+                <th>Itens</th>
+                <th>Total</th>
+                <th>Data</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="pedidos-tbody"></tbody>
+          </table>
+          <div id="pedidos-empty" class="empty-state-table" style="display:none">
+            <i class="fas fa-bag-shopping"></i>
+            <p>Nenhum pedido encontrado.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-section" id="sec-produtos">
+        <div class="section-header">
+          <h2>Gerenciar Produtos</h2>
+          <button class="btn-primary" onclick="abrirModalProduto()">
+            <i class="fas fa-plus"></i> Novo Produto
+          </button>
+        </div>
+
+        <div class="products-admin-grid" id="products-admin-grid"></div>
+      </section>
+
+      <section class="admin-section" id="sec-perfil">
+        <div class="perfil-wrapper">
+          <div class="perfil-card">
+            <div class="perfil-avatar">
+              <i class="fas fa-user-shield"></i>
+            </div>
+            <h2>Perfil do Administrador</h2>
+            <p class="perfil-role">Acesso total ao sistema</p>
+
+            <div id="perfil-admin-success" class="form-success-admin" style="display:none">
+              <i class="fas fa-check-circle"></i> Perfil atualizado com sucesso!
+            </div>
+
+            <div class="perfil-form">
+              <div class="form-group">
+                <label>Nome completo</label>
+                <input type="text" id="admin-nome" class="admin-input" placeholder="Nome do administrador" />
+              </div>
+              <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" id="admin-email" class="admin-input" placeholder="E-mail" readonly />
+              </div>
+              <div class="form-group">
+                <label>Telefone</label>
+                <input type="tel" id="admin-tel" class="admin-input" placeholder="Telefone" />
+              </div>
+              <div class="form-group">
+                <label>Nova senha</label>
+                <input type="password" id="admin-senha" class="admin-input" placeholder="Deixe vazio para manter" />
+              </div>
+              <div class="form-group">
+                <label>Confirmar senha</label>
+                <input type="password" id="admin-senha2" class="admin-input" placeholder="Confirme a nova senha" />
+              </div>
+              <button class="btn-primary full-width" onclick="salvarPerfilAdmin()">
+                <i class="fas fa-save"></i> Salvar alterações
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay-admin" id="produto-modal">
+  <div class="modal-admin">
+    <div class="modal-admin-header">
+      <h3 id="produto-modal-title">Novo Produto</h3>
+      <button onclick="fecharModalProduto()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-admin-body">
+      <input type="hidden" id="produto-id" />
+      
+      <div class="form-group">
+        <label>Nome do produto *</label>
+        <input type="text" id="produto-nome" class="admin-input" placeholder="Ex: Camisa Dry Fit" />
+      </div>
+      
+      <div class="form-group">
+        <label>URL da Imagem</label>
+        <input type="text" id="produto-imagem" class="admin-input" placeholder="https://exemplo.com/imagem.jpg" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Preço (R$) *</label>
+          <input type="number" id="produto-preco" class="admin-input" placeholder="0.00" step="0.01" min="0" />
+        </div>
+        
+        <div class="form-group">
+          <label>Estoque *</label>
+          <input type="number" id="produto-estoque" class="admin-input" placeholder="Ex: 10" min="0" />
+        </div>
+
+        <div class="form-group">
+          <label>Categoria *</label>
+          <select id="produto-categoria" class="admin-input">
+            <option value="Camisa Masculina">Camisa Masculina</option>
+            <option value="Bermuda Masculina">Bermuda Masculina</option>
+            <option value="Camisa Feminina">Camisa Feminina</option>
+            <option value="Shorts Femininos">Shorts Femininos</option>
+            <option value="Mochila">Mochila</option>
+            <option value="Bola">Bola</option>  
+            <option value="Tenis">Tênis</option>
+            <option value="Chuteira">Chuteira</option>
+              <option value="Academia">Academia</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="modal-admin-footer">
+        <button class="btn-secondary" onclick="fecharModalProduto()">Cancelar</button>
+        <button class="btn-primary" onclick="salvarProduto()">
+          <i class="fas fa-save"></i> Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay-admin" id="delete-modal">
+  <div class="modal-admin" style="max-width:400px">
+    <div class="modal-admin-header">
+      <h3>Confirmar exclusão</h3>
+      <button onclick="fecharDeleteModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-admin-body" style="text-align:center; padding:30px 20px">
+      <div style="font-size:3rem; color:#e53e3e; margin-bottom:16px"><i class="fas fa-trash-can"></i></div>
+      <p>Tem certeza que deseja remover <strong id="delete-product-name"></strong>?</p>
+      <p style="color:#888; margin-top:8px; font-size:0.9rem">Esta ação não pode ser desfeita.</p>
+      <div class="modal-admin-footer" style="margin-top:24px">
+        <button class="btn-secondary" onclick="fecharDeleteModal()">Cancelar</button>
+        <button class="btn-danger" onclick="confirmarDelete()">
+          <i class="fas fa-trash-can"></i> Remover
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

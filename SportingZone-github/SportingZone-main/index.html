@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SportingZone | Produtos Esportivos</title>
+  <link rel="shortcut icon" href="img/logoGoogle (1).png" type="image/png">
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <a href="#inicio" class="logo">
+      <img src="img/LogoSportingZone.png" alt="Logo SportingZone">
+    </a>
+
+    <nav class="desktop-nav">
+      <a href="#inicio">Início</a>
+      <a href="#produtos">Produtos</a>
+      <a href="#localizacao">Localização</a>
+      <a href="#contato">Contato</a>
+      <a href="admin.html" id="admin-nav-link" class="admin-link" style="display:none">
+        <i class="fas fa-shield-halved"></i> Admin
+      </a>
+    </nav>
+
+    <div class="nav-icons">
+      <div class="user-nav-wrapper">
+        <button class="nav-btn" id="user-nav-btn" onclick="abrirModal('login-modal')">
+          <i class="fas fa-user-circle"></i>
+          <span>Entrar</span>
+        </button>
+        <div class="user-dropdown" id="user-dropdown">
+          <div class="user-dropdown-name" id="dropdown-name"></div>
+          <a href="admin.html" id="dropdown-admin-link" style="display:none">
+            <i class="fas fa-shield-halved"></i> Painel Admin
+          </a>
+          <button onclick="abrirPerfilModal()">
+            <i class="fas fa-user-edit"></i> Meu Perfil
+          </button>
+          <button onclick="abrirHistorico()">
+            <i class="fas fa-box-open"></i> Meus Pedidos
+          </button>
+          <button onclick="fazerLogout()" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Sair
+          </button>
+        </div>
+      </div>
+
+      <button class="nav-btn" onclick="toggleCart()">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cart-count">0</span>
+      </button>
+
+      <button class="menu-mobile" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" id="mobile-nav">
+    <a href="#inicio">Início</a>
+    <a href="#produtos">Produtos</a>
+    <a href="#localizacao">Localização</a>
+    <a href="#contato">Contato</a>
+    <a href="admin.html" id="admin-mobile-link" style="display:none; color:var(--green-lime)">
+      <i class="fas fa-shield-halved"></i> Admin
+    </a>
+  </nav>
+</header>
+
+<section class="hero" id="inicio">
+  <div class="carousel">
+    <div class="slide active"><img src="img/banner1.png" alt="Banner 1"></div>
+    <div class="slide"><img src="img/banner2.png" alt="Banner 2"></div>
+    <div class="slide"><img src="img/banner3.png" alt="Banner 3"></div>
+    <button class="carousel-btn prev" onclick="mudarSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+    <button class="carousel-btn next" onclick="mudarSlide(1)"><i class="fas fa-chevron-right"></i></button>
+  </div>
+</section>
+
+<section class="categories">
+  <div class="section-title">
+    <h2>Categorias</h2>
+    <p>Escolha o tipo de produto que procura</p>
+  </div>
+  <div class="categories-grid">
+    <button class="category-card active" onclick="filtrarCategoria('todos', this)">
+      <i class="fas fa-border-all"></i><span>Todos</span>
+    </button>
+    <button class="category-card" onclick="filtrarCategoria('Bermuda Masculina', this)">
+      <i class="fas fa-person"></i><span>Bermuda Masculina</span>
+    </button>
+    <button class="category-card" onclick="filtrarCategoria('Camisa Masculina', this)">
+      <i class="fas fa-person"></i><span>Camisa Masculina</span>
+    </button>
+    <button class="category-card" onclick="filtrarCategoria('Shorts Feminino', this)">
+      <i class="fas fa-person-dress"></i><span>Shorts Feminino</span>
+    </button>
+    <button class="category-card" onclick="filtrarCategoria('Camisa Feminina', this)">
+      <i class="fas fa-person-dress"></i><span>Camisa Feminina</span>
+    </button>
+    <button class="category-card" onclick="filtrarCategoria('Mochila', this)">
+      <i class="material-symbols-outlined">personal_bag</i><span>Mochila</span>
+    </button>
+    <button class="category-card" onclick="filtrarCategoria('Bolas', this)">
+      <i class="fa-solid fa-futbol"></i><span>Bolas</span>
+    </button>
+    <button class="category-card" onclick="filtrarCategoria('Chuteira', this)">
+      <i class="fas fa-shoe-prints"></i><span>Chuteira</span>
+    </button>
+    <button class="category-card" onclick="filtrarCategoria('Tenis', this)">
+      <i class="fas fa-shoe-prints"></i><span>Tênis</span>
+    </button>
+    <button class="category-card" onclick="filtrarCategoria('Academia', this)">
+      <i class="fas fa-dumbbell"></i><span>Academia</span>
+    </button>
+  
+  </div>
+</section>
+
+<main class="container" id="produtos">
+  <div class="section-title">
+    <h2>Produtos Esportivos</h2>
+    <p>Confira alguns produtos disponíveis na SportingZone</p>
+  </div>
+  <div class="search-area">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="search-input" placeholder="Pesquisar produto..." onkeyup="pesquisarProduto()" />
+    </div>
+  </div>
+  <div class="products-grid" id="products-grid"></div>
+</main>
+
+<section class="location" id="localizacao">
+  <div class="section-title">
+    <h2>Localização</h2>
+    <p>Venha conhecer a SportingZone</p>
+  </div>
+  <div class="map-container">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d792.3565423698402!2d-34.934196002707594!3d-8.089894382517748!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x7ab1f005a9d604d%3A0xef75971b6cf54d5b!2sSportingZone!5e1!3m2!1spt-BR!2sbr!4v1777920617819!5m2!1spt-BR!2sbr"
+      width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+  </div>
+</section>
+
+<section class="contact" id="contato">
+  <h2>Contato</h2>
+  <p><i class="fas fa-envelope"></i> contato@sportingzone.com</p>
+  <p><i class="fab fa-whatsapp"></i> (81) 99999-9999</p>
+</section>
+
+<!-- Carrinho -->
+<aside class="sidebar" id="cart-sidebar">
+  <div class="sidebar-header">
+    <h2>Carrinho</h2>
+    <span onclick="toggleCart()">&times;</span>
+  </div>
+  <div id="cart-items" class="cart-items">
+    <p class="empty-cart">Seu carrinho está vazio.</p>
+  </div>
+  <div class="cart-footer">
+    <strong>Total: R$ <span id="cart-total">0,00</span></strong>
+    <button class="btn-login" onclick="finalizarCompra()">Finalizar compra</button>
+  </div>
+</aside>
+
+<!-- Modal Login / Cadastro -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal-box auth-modal">
+    <span class="close-btn-modal" onclick="fecharModal('login-modal')">&times;</span>
+    <div class="auth-header">
+      <h2>Minha Conta</h2>
+      <p>Acesse sua conta ou crie um cadastro na SportingZone.</p>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchAuth('login')">Login</div>
+      <div class="tab" onclick="switchAuth('cadastro')">Cadastro</div>
+    </div>
+
+    <div id="login-form" class="auth-form active">
+      <h3>Entrar na conta</h3>
+      <div id="login-error" class="form-error" style="display:none"></div>
+      <input type="email" id="login-email" class="form-input" placeholder="E-mail" />
+      <input type="password" id="login-senha" class="form-input" placeholder="Senha" />
+      <button class="btn-login" onclick="fazerLogin()">Entrar</button>
+      <p class="auth-toggle">Não tem conta? <span onclick="switchAuth('cadastro')">Cadastre-se aqui</span></p>
+    </div>
+
+    <div id="cadastro-form" class="auth-form">
+      <h3>Criar nova conta</h3>
+      <div id="cad-error" class="form-error" style="display:none"></div>
+      <input type="text" id="cad-nome" class="form-cadastro" placeholder="Nome completo" />
+      <input type="email" id="cad-email" class="form-cadastro" placeholder="E-mail" />
+      <input type="text" id="cad-cpf" class="form-cadastro" placeholder="CPF" />
+      <input type="tel" id="cad-tel" class="form-cadastro" placeholder="Telefone" />
+      <input type="text" id="cad-rua" class="form-cadastro" placeholder="Rua" />
+      <input type="text" id="cad-endereco" class="form-cadastro" placeholder="Número" />
+      <input type="text" id="cad-bairro" class="form-cadastro" placeholder="Bairro" />
+      <input type="text" id="cad-cidade" class="form-cadastro" placeholder="Cidade" />
+      <input type="text" id="cad-estado" class="form-cadastro" placeholder="Estado" />
+      <input type="text" id="cad-cep" class="form-cadastro" placeholder="CEP" />
+      <input type="password" id="cad-senha" class="form-cadastro" placeholder="Crie uma senha" />
+      <button class="btn-login" onclick="fazerCadastro()">Cadastrar</button>
+      <p class="auth-toggle">Já tem conta? <span onclick="switchAuth('login')">Faça login</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Perfil -->
+<div class="modal-overlay" id="perfil-modal">
+  <div class="modal-box auth-modal">
+    <span class="close-btn-modal" onclick="fecharModal('perfil-modal')">&times;</span>
+    <div class="auth-header">
+      <h2>Meu Perfil</h2>
+      <p>Atualize suas informações pessoais.</p>
+    </div>
+    <div id="perfil-success" class="form-success" style="display:none">
+      <i class="fas fa-check-circle"></i> Perfil atualizado com sucesso!
+    </div>
+    <input type="text" id="perfil-nome" class="form-input" placeholder="Nome completo" />
+    <input type="email" id="perfil-email" class="form-input" placeholder="E-mail" />
+    <input type="text" id="perfil-cpf" class="form-input" placeholder="CPF" />
+    <input type="date" id="perfil-nasc" class="form-input" />
+    <input type="tel" id="perfil-tel" class="form-input" placeholder="Telefone" />
+    <textarea id="perfil-end" class="form-input" rows="3" placeholder="Endereço completo"></textarea>
+    <input type="password" id="perfil-senha" class="form-input" placeholder="Nova senha (deixe vazio para manter)" />
+    <button class="btn-login" onclick="salvarPerfil()">Salvar alterações</button>
+  </div>
+</div>
+
+<!-- Modal Pedido confirmado -->
+
+<!-- ===== MODAL PAGAMENTO ===== -->
+<div class="modal-overlay" id="pagamento-modal">
+  <div class="modal-box" style="max-width:540px; padding:0; overflow:hidden;">
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 24px 16px; border-bottom:1px solid #eee;">
+      <h2 style="font-size:1.2rem; margin:0;"><i class="fas fa-lock" style="color:var(--green-lime); margin-right:8px;"></i>Pagamento Seguro</h2>
+      <span class="close-btn-modal" onclick="fecharModal('pagamento-modal')" style="position:static; font-size:1.5rem; cursor:pointer;">&times;</span>
+    </div>
+
+    <!-- Resumo do pedido -->
+    <div style="padding:16px 24px; background:#f9fafb; border-bottom:1px solid #eee;">
+      <div id="pagamento-itens-lista" style="font-size:0.88rem; color:#555; margin-bottom:8px; max-height:80px; overflow-y:auto;"></div>
+      <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.05rem;">
+        <span>Total</span>
+        <span style="color:var(--green-lime);">R$ <span id="pagamento-total-valor">0,00</span></span>
+      </div>
+    </div>
+
+    <!-- Abas de pagamento -->
+    <div style="display:flex; border-bottom:2px solid #eee; background:#fff;">
+      <button class="pgto-tab-btn active" data-aba="cartao" onclick="trocarAbaPagamento('cartao')">
+        <i class="fas fa-credit-card"></i> Cartão
+      </button>
+      <button class="pgto-tab-btn" data-aba="pix" onclick="trocarAbaPagamento('pix')">
+        <i class="fas fa-qrcode"></i> PIX
+      </button>
+      <button class="pgto-tab-btn" data-aba="boleto" onclick="trocarAbaPagamento('boleto')">
+        <i class="fas fa-barcode"></i> Boleto
+      </button>
+    </div>
+
+    <div style="padding:22px 24px;">
+
+      <!-- ABA CARTÃO -->
+      <div class="pgto-aba-conteudo active" id="pgto-aba-cartao">
+        <div style="display:flex; gap:8px; margin-bottom:14px;">
+          <button class="pgto-tipo-btn active" onclick="this.parentElement.querySelectorAll('.pgto-tipo-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active')">
+            <i class="fas fa-credit-card"></i> Crédito
+          </button>
+          <button class="pgto-tipo-btn" onclick="this.parentElement.querySelectorAll('.pgto-tipo-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active')">
+            <i class="fas fa-money-check-dollar"></i> Débito
+          </button>
+        </div>
+        <div class="pgto-campo">
+          <label>Número do cartão</label>
+          <input type="text" id="cartao-numero" placeholder="0000 0000 0000 0000" oninput="_mascaraCartao(this)" maxlength="19">
+        </div>
+        <div class="pgto-campo">
+          <label>Nome no cartão</label>
+          <input type="text" id="cartao-nome" placeholder="NOME COMO NO CARTÃO" style="text-transform:uppercase;">
+        </div>
+        <div style="display:flex; gap:12px;">
+          <div class="pgto-campo" style="flex:1;">
+            <label>Validade</label>
+            <input type="text" id="cartao-validade" placeholder="MM/AA" oninput="_mascaraValidade(this)" maxlength="5">
+          </div>
+          <div class="pgto-campo" style="flex:1;">
+            <label>CVV</label>
+            <input type="text" id="cartao-cvv" placeholder="123" oninput="_mascaraCVV(this)" maxlength="4">
+          </div>
+        </div>
+        <div class="pgto-campo">
+          <label>Parcelas</label>
+          <select id="cartao-parcelas"></select>
+        </div>
+      </div>
+
+      <!-- ABA PIX -->
+      <div class="pgto-aba-conteudo" id="pgto-aba-pix">
+        <div style="text-align:center; padding:10px 0;">
+          <div style="width:140px; height:140px; margin:0 auto 16px; background:#f0f4ff; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:5rem; color:#6c63ff;">
+            <i class="fas fa-qrcode"></i>
+          </div>
+          <p style="font-size:0.9rem; color:#555; margin-bottom:6px;">Valor a pagar:</p>
+          <p style="font-size:1.6rem; font-weight:800; color:var(--green-lime);">R$ <span id="pix-valor">0,00</span></p>
+          <p style="font-size:0.82rem; color:#888; margin:10px 0 14px;">Escaneie o QR Code ou use o código Pix copia e cola abaixo:</p>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="pix-copia-cola" readonly style="flex:1; font-size:0.78rem; padding:10px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9; color:#444;" placeholder="O código será gerado ao confirmar">
+            <button id="btn-copiar-pix" onclick="copiarChavePix()" style="white-space:nowrap; background:var(--green-lime); color:#000; border:none; padding:10px 14px; border-radius:8px; font-weight:700; cursor:pointer; font-size:0.82rem;">
+              <i class="fas fa-copy"></i> Copiar código
+            </button>
+          </div>
+          <p style="font-size:0.78rem; color:#aaa; margin-top:10px;"><i class="fas fa-clock"></i> Código válido por 30 minutos após a confirmação</p>
+        </div>
+      </div>
+
+      <!-- ABA BOLETO -->
+      <div class="pgto-aba-conteudo" id="pgto-aba-boleto">
+        <div style="text-align:center; padding:10px 0;">
+          <div style="font-size:4rem; color:#555; margin-bottom:14px;"><i class="fas fa-barcode"></i></div>
+          <p style="font-size:0.9rem; color:#555; margin-bottom:6px;">Valor do boleto:</p>
+          <p style="font-size:1.6rem; font-weight:800; color:#333;">R$ <span id="boleto-valor">0,00</span></p>
+          <div style="background:#fff8e1; border:1px solid #ffe082; border-radius:10px; padding:14px 16px; margin-top:16px; text-align:left; font-size:0.85rem; color:#7c6000;">
+            <p style="font-weight:700; margin-bottom:6px;"><i class="fas fa-info-circle"></i> Instruções importantes:</p>
+            <ul style="padding-left:18px; line-height:1.8;">
+              <li>O boleto será gerado após a confirmação</li>
+              <li>Prazo de pagamento: <strong>3 dias úteis</strong></li>
+              <li>Compensação bancária: até <strong>2 dias úteis</strong></li>
+              <li>Após vencimento, o pedido será <strong>cancelado automaticamente</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <p id="pagamento-erro" style="display:none; color:#e53e3e; font-size:0.85rem; margin-top:10px; background:#fff5f5; padding:10px; border-radius:8px; border-left:3px solid #e53e3e;"></p>
+
+      <button onclick="confirmarPagamento()" style="width:100%; margin-top:18px; background:var(--green-lime); color:#000; border:none; padding:15px; border-radius:10px; font-size:1rem; font-weight:800; cursor:pointer; letter-spacing:0.3px;">
+        <i class="fas fa-lock"></i> Confirmar Pagamento
+      </button>
+      <p style="text-align:center; font-size:0.75rem; color:#aaa; margin-top:10px;"><i class="fas fa-shield-alt"></i> Pagamento 100% seguro e criptografado</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL CONFIRMAÇÃO PIX ===== -->
+<div class="modal-overlay" id="pix-confirmacao-modal">
+  <div class="modal-box" style="text-align:center; padding:40px 30px; max-width:380px;">
+    <span class="close-btn-modal" onclick="fecharModal('pix-confirmacao-modal')" style="position:absolute; top:14px; right:18px; font-size:1.5rem; cursor:pointer;">&times;</span>
+    <div style="font-size:3.5rem; color:#6c63ff; margin-bottom:16px;"><i class="fas fa-qrcode"></i></div>
+    <h2 style="margin-bottom:10px;">PIX gerado!</h2>
+    <p style="color:#666; font-size:0.92rem;">Copie o código Pix e realize o pagamento no seu banco. Após a confirmação, seu pedido será processado em instantes.</p>
+    <button class="btn-login" style="margin-top:24px; padding:12px 32px; width:auto;" onclick="fecharModal('pix-confirmacao-modal')">Entendido</button>
+  </div>
+</div>
+
+<!-- ===== MODAL CONFIRMAÇÃO BOLETO ===== -->
+<div class="modal-overlay" id="boleto-confirmacao-modal">
+  <div class="modal-box" style="text-align:center; padding:40px 30px; max-width:380px;">
+    <span class="close-btn-modal" onclick="fecharModal('boleto-confirmacao-modal')" style="position:absolute; top:14px; right:18px; font-size:1.5rem; cursor:pointer;">&times;</span>
+    <div style="font-size:3.5rem; color:#f6ad55; margin-bottom:16px;"><i class="fas fa-barcode"></i></div>
+    <h2 style="margin-bottom:10px;">Boleto gerado!</h2>
+    <p style="color:#666; font-size:0.92rem;">Seu boleto foi registrado. Realize o pagamento até o vencimento (3 dias úteis). Após a compensação, seu pedido será liberado.</p>
+    <button class="btn-login" style="margin-top:24px; padding:12px 32px; width:auto;" onclick="fecharModal('boleto-confirmacao-modal')">Entendido</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="pedido-modal">
+  <div class="modal-box" style="text-align:center; padding:40px 30px; max-width:380px;">
+    <span class="close-btn-modal" onclick="fecharModal('pedido-modal')">&times;</span>
+    <div style="font-size:3.5rem; color:var(--green-lime); margin-bottom:16px;">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    <h2 style="margin-bottom:10px;">Pedido realizado!</h2>
+    <p style="color:#666;">Seu pedido foi registrado com sucesso. Obrigado pela compra!</p>
+    <button class="btn-login" style="margin-top:24px; padding:12px 32px; width:auto;"
+      onclick="fecharModal('pedido-modal')">Continuar comprando</button>
+  </div>
+</div>
+
+<!-- Modal Histórico de Pedidos -->
+<div class="modal-overlay" id="historico-modal">
+  <div class="modal-box auth-modal" style="max-width:560px;">
+    <span class="close-btn-modal" onclick="fecharModal('historico-modal')">&times;</span>
+    <div class="auth-header">
+      <h2><i class="fas fa-box-open" style="margin-right:8px;"></i>Meus Pedidos</h2>
+      <p>Acompanhe o histórico das suas compras.</p>
+    </div>
+    <div id="historico-lista" style="max-height:420px;overflow-y:auto;padding-right:4px;margin-top:10px;"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-content">
+    <div>
+      <h3>SportingZone</h3>
+      <p>Produtos esportivos para todos os estilos.</p>
+    </div>
+    <div>
+      <h3>Links</h3>
+      <a href="#inicio">Início</a>
+      <a href="#produtos">Produtos</a>
+      <a href="#localizacao">Localização</a>
+      <a href="#contato">Contato</a>
+    </div>
+    <div>
+      <h3>Redes sociais</h3>
+      <p><i class="fab fa-instagram"></i> Instagram</p>
+      <p><i class="fab fa-facebook"></i> Facebook</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; 2026 SportingZone - Todos os direitos reservados.
+  </div>
+</footer>
+
+<script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
