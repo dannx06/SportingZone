@@ -68,7 +68,7 @@ SportingZone/
 ## 1️⃣ Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/SportingZone.git
+https://github.com/dannx06/SportingZone.git
 ```
 
 ## 2️⃣ Abra a pasta do projeto
